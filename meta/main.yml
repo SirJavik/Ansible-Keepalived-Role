@@ -1,6 +1,9 @@
 ---
 dependencies:
-  - role: javik.scripts
+  - name: javik.scripts
+    src: https://gitlab.com/Javik/ansible-scripts-role
+    scm: git
+    version: main
     
 galaxy_info:
   role_name: keepalived
