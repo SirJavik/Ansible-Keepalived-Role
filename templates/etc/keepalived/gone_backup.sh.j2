@@ -1,0 +1,7 @@
+#!/bin/bash
+####################################
+##### MANAGED BY ANSIBLE ({{ ansible_role_name }})
+####################################
+
+ip addr del {{ javikweb_keepalived_ha_ipv4 }} dev eth0
+ip addr del {{ javikweb_keepalived_ha_ipv6 }} dev eth0

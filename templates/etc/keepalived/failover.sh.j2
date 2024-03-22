@@ -1,0 +1,15 @@
+#!/bin/bash
+####################################
+##### MANAGED BY ANSIBLE ({{ ansible_role_name }})
+####################################
+
+IPv4='loadbalancer1-fsn1.infra.sirjavik.de-floating-ipv4'
+IPv6='loadbalancer1-fsn1.infra.sirjavik.de-floating-ipv6'
+HOSTNAME=$(hostname -f)
+export HCLOUD_TOKEN='{{ vault_javikweb_hcloud_token }}'
+
+#ip addr add {{ javikweb_keepalived_ha_ipv4 }} dev eth0
+#ip addr add {{ javikweb_keepalived_ha_ipv6 }} dev eth0
+
+hcloud-ip assign "$IPv4" "$HOSTNAME" &
+hcloud-ip assign "$IPv6" "$HOSTNAME" &

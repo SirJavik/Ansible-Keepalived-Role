@@ -1,0 +1,21 @@
+---
+dependencies:
+  - role: javik.scripts
+    
+galaxy_info:
+  role_name: keepalived
+  author: javik
+  description: Keepalived for Debian
+  license: "MIT"
+  min_ansible_version: "2.10"
+  platforms:
+    - name: Debian
+      versions:
+        - all
+  galaxy_tags:
+    - loadbalancing
+    - failover
+    - keepalived
+    - ha
+
+allow_duplicates: true
