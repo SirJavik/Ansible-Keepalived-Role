@@ -1,65 +1,14 @@
-- name: Update the repository cache
-  ansible.builtin.apt:
-    update_cache: yes
+---
+#########################################
+#            _             _ _          #
+#           | |           (_) |         #
+#           | | __ ___   ___| | __      #
+#       _   | |/ _` \ \ / / | |/ /      #
+#      | |__| | (_| |\ V /| |   <       #
+#       \____/ \__,_| \_/ |_|_|\_\      #
+#                                       #
+#########################################
 
-- name: Install keepalived
-  ansible.builtin.apt:
-    name: keepalived
-    state: latest
-
-- name: Start & enable keepalived
-  ansible.builtin.systemd_service:
-    name: keepalived
-    state: started
-    enabled: true
-    masked: false
-
-- name: Copy keepalived.conf to servers
-  ansible.builtin.template:
-    src: ./templates/etc/keepalived/keepalived.conf.j2
-    dest: /etc/keepalived/keepalived.conf
-    owner: root
-    group: root
-    mode: '0644'
-  notify: Restart keepalived
-
-- name: Remove 60-my-floating-ip.cfg
-  ansible.builtin.file:
-    path: /etc/network/interfaces.d/60-my-floating-ip.cfg
-    state: absent
-
-- name: Copy 60-floating-ip.cfg to servers
-  ansible.builtin.template:
-    src: ./templates/etc/network/interfaces.d/60-floating-ip.cfg.tmpl
-    dest: /etc/network/interfaces.d/60-floating-ip.cfg
-    owner: root
-    group: root
-    mode: '0644'
-  notify: Restart networking
-
-- name: Create /etc/keepalived/scripts
-  ansible.builtin.file:
-    path: /etc/keepalived/scripts
-    state: directory
-    mode: '0755'
-
-- name: Copy failover.sh to servers
-  ansible.builtin.template:
-    src: ./templates/etc/keepalived/failover.sh.j2
-    dest: /etc/keepalived/scripts/failover.sh
-    owner: root
-    group: root
-    mode: '0750'
-
-- name: Copy gone_backup.sh to servers
-  ansible.builtin.template:
-    src: ./templates/etc/keepalived/gone_backup.sh.j2
-    dest: /etc/keepalived/scripts/gone_backup.sh
-    owner: root
-    group: root
-    mode: '0750'
-
-- name: Remove old failover.sh
-  ansible.builtin.file:
-    path: /etc/keepalived/failover.sh
-    state: absent
+- name: Import tasks for install
+  ansible.builtin.import_tasks:
+    file: install.yml

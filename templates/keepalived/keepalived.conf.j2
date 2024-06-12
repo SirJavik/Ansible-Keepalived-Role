@@ -1,0 +1,48 @@
+{{ ansible_managed | comment('plain', prefix='#######\n#', postfix='#\n#######\n') }}
+
+{% for service in keepalived_check_services %}
+vrrp_script chk_{{ service.name }} {
+    script "/usr/bin/pgrep -f {{ service.name }}"
+    interval {{ service.interval }}
+    weight {{ service.weight }}
+}
+{% endfor %}
+
+vrrp_instance IcingaWeb {
+    interface {{ private_interface }}
+
+{% if keepalived_master == true %}
+    state MASTER
+    priority 200
+{% else %}
+    state BACKUP
+    priority 100
+{% endif %}
+    virtual_router_id 30
+{% for server in ansible_play_hosts %}
+{% if server == ansible_facts['fqdn'] %}
+    unicast_src_ip {{ ansible_facts[private_interface]['ipv4']['address'] }}
+{% endif %}
+{% endfor %}
+    unicast_peer {
+{% for server in ansible_play_hosts %}
+{% if server != ansible_facts['fqdn'] %}
+        {{ hostvars[server]['ansible_'+private_interface]['ipv4']['address'] }}
+{% endif %}
+{% endfor %}
+    }
+
+    authentication {
+        auth_type PASS
+        auth_pass {{ keepalived_password }}
+    }
+
+    track_script {
+{% for service in keepalived_check_services %}
+        chk_{{ service.name }}
+{% endfor %}
+    }
+
+    #notify_master /etc/keepalived/scripts/failover.sh
+}
+
